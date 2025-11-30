@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=750">
     <link rel="icon" href="image/favicon.ico">
     <link rel="apple-touch-icon" sizes="180x180" href="image/apple-touch-icon.png">
-    <title>rakugaki_pao</title>
+    <title>pao_board</title>
     <link rel="stylesheet" type="text/css" href="style.css?v=19"> <!--v=の値を変えることで、CSSのキャッシュを破棄して再読み込みしてもらいますわ-->
 </head>
 <body>
@@ -13,127 +13,42 @@
         <div id="controls-top">
             <div class="top-left-buttons">
                 <button id="clear" class="controls-top-button" title="キャンバスのクリア/Clear Canvas">
-                    <img src="image/new.svg" style="height: 100%;" alt="Clear">
+                    <img class="svg-button" src="image/new.svg" style="height: 100%;" alt="Clear">
                 </button>
-                <button id="manual" class="controls-top-button" title="rakugaki_paoについて/About rakugaki_pao">
-                    <img src="image/manual.svg" style="height: 100%;" alt="Manual">
+                <button id="manual" class="controls-top-button" title="pao_boardについて/About pao_board">
+                    <img class="svg-button" src="image/manual.svg" style="height: 100%;" alt="Manual">
                 </button>
             </div>
 
             <div class="top-right-buttons">
                 <button id="copy-button" class="controls-top-button" title="クリップボードにコピー/Copy to Clipboard">
-                    <img src="image/copytoclipboard.svg" style="height: 100%;" alt="Copy">
+                    <img class="svg-button" src="image/copytoclipboard.svg" style="height: 100%;" alt="Copy">
                 </button>
                 <button id="save-button" class="controls-top-button" title="ダウンロードして保存/Save to Download">
-                    <img src="image/download.svg" style="height: 100%;" alt="Download">
+                    <img class="svg-button" src="image/download.svg" style="height: 100%;" alt="Download">
                 </button>
                 <button id="share-button" class="controls-top-button" title="共有/Share">
-                    <img src="image/share.svg" style="height: 100%;" alt="Share">
+                    <img class="svg-button" src="image/share.svg" style="height: 100%;" alt="Share">
                 </button>
             </div>
         </div>
 
         <div id="canvas-container">
             <canvas id="color-layer"></canvas>
-            <canvas id="active-stroke-layer"></canvas>
             <canvas id="black-layer"></canvas>
             <div id="cursor"></div>
         </div>
 
-        <div id="controls_bottom">  
-            <button id="undo-button" title="元に戻す/Undo"  style="opacity: 0.3; pointer-events: none;">
-                <img src="image/undo.svg" style="height: 100%;" alt="Undo">
-            </button>
-                     
-            <input type="range" id="tool-size" min="0" max="7" title="ペン・ブラシのサイズ/Tool Size">
-
-            <button id="black-pen-button" class="paint-tool-button" title="黒ペン/Black Pen">
-                <img src="image/pen_w.svg" style="height: 100%;" alt="Pen">
-            </button>
-            <button id="black-eraser-button" class="paint-tool-button" title="黒ペン消し/Black Pen Eraser">
-                <img src="image/eraser.svg" style="height: 100%;" alt="Eraser">    
-            </button>
-            
-            <div id="color-brush-buttons-container" title="色ブラシ/Color Brush"></div>
-            <button id="changeable-color-brush-button" class="color-brush-button" title="選択色ブラシ/Changeable Color Brush"></button>
-            <input id="palette" type="color" title="色の選択/Select Color">
-            <button id="color-eraser-button" class="paint-tool-button" title="色ブラシ消し/Color Brush Eraser"></button>
-             
-            <input type="range" id="opacity" min="0.2" max="1" step="0.4" value="1" title="ペン・ブラシの不透明度/Opacity of Pen/Brush">
-        </div>
-
-        <div id="logo-button-container">
-            <button id="auth-button" class="logo-button" title="認証/Authentication">
-                <img id="auth-button-img" style="height: 100%;" alt="Authentication" src="image/mistodon_disable.svg">
-            </button>
-            <button id="post-button" class="logo-button" style="display: none;">
-                <img id="post-button-img" style="height: 100%;" alt="Post" src="image/mistodon.svg">
-            </button>
-            <button id="posting-dummy-button" class="logo-button" style="display: none;">
-                <img id="posting-dummy-button-img" style="height: 100%;" alt="Posting.." src="image/mistodon_active.svg">
-            </button>
-        </div>
-
         <div id="hashtag-line">
             <button id="copy-hashtag" class="copy-hashtag-button" title="ハッシュタグをコピー/Copy Hashtag">
-                <span id="hashtag-text">#rakugaki_pao</span>
-                <img src="image/copytoclipboard.svg" class="icon" alt="Copy hashtag">
+                <span id="hashtag-text">#pao_board</span>
+                <img class="svg-button" src="image/copytoclipboard.svg" class="icon" alt="Copy hashtag">
             </button>
         </div>   
         
         <div id="message-line"></div>
         
-        <div id="progress-bar-line">
-            <progress id="progress-bar"></progress>
-        </div>
-    </div>
 
-    <div id="post-dialog-modal" class="modal"  style="display: none;"> <!-- none -->
-        <div class="modal-content">
-            <div class="dialog-title-container">
-                <button id="close-post-dialog-button" class="close-dialog-button">×</button>
-                <button id="destination-server-reset-button"></button>
-            </div>
-            <img id="preview-img" width="360" height="360" alt="Preview Image" src="image/dummy_preview.png">
-            <textarea id="comment-textarea" rows="3" maxlength="483"></textarea>
-            <div class="select-container">
-                <select id="visibility-select">
-                    <option value="public">🌐　公開 Public　</option>
-                    <option value="unlisted">🌙　ひかえめな公開 Quiet public　</option>
-                    <option value="private">🔒　フォロワー Followers　</option>
-                    <option value="direct">✉️　特定の人 Specific people　</option>
-                </select>
-                <input type="checkbox" id="is-sensitive-checkbox">
-                <label for="is-sensitive-checkbox" class="checkbox-label">⚠️Sensitive </label>
-                <button id="submit-button" class="submit-button">Post</button>   
-            </div>
-        </div>
-    </div>
-
-    <div id="destination-server-setting-dialog-modal" class="modal"  style="display: none;"> <!-- none -->
-        <div class="modal-content">
-            <div class="dialog-title-container">
-                <button id="close-destination-server-dialog-button" class="close-dialog-button">×</button>
-            </div>
-            <div class="select-container">
-                <select id="destination-server-select"></select>
-                <button id="add-destination-server-button" class="destination-server-setting-toggle-button">+</button>
-                <button id="destination-server-auth-button" class="desitination-server-auth-button">✔</button>   
-            </div>
-        </div>
-    </div>
-
-    <div id="add-destination-server-dialog-modal" class="modal"  style="display: none;"> <!-- none -->
-        <div class="modal-content">
-            <div class="dialog-title-container">
-                <button id="close-add-destination-server-dialog-button" class="close-dialog-button">×</button>
-            </div>
-            <div class="select-container">
-                <input type="url" id="destination-server-url-input" placeholder="Enter misskey server URL">
-                <button id="back-destination-server-button" class="destination-server-setting-toggle-button">☰</button>
-                <button id="add-auth-destination-server-button" class="desitination-server-auth-button">✔</button>   
-            </div>
-        </div>
     </div>
 
     <script>
@@ -148,72 +63,24 @@
         const canvasContainer = document.getElementById('canvas-container');
         const blackLayer = document.getElementById('black-layer');
         const colorLayer = document.getElementById('color-layer');
-        const activeStrokeLayer = document.getElementById('active-stroke-layer');
         const cursor = document.getElementById('cursor');
         const combinedCanvas = document.createElement('canvas');
 
-        const undoButton = document.getElementById('undo-button');
-        const toolSizeParamInput = document.getElementById('tool-size');
-        const blackPenButton = document.getElementById('black-pen-button');
-        const blackEraser = document.getElementById('black-eraser-button');
-        const colorBrushButtonsContainer = document.getElementById('color-brush-buttons-container');
-        const changeableColorBrushButton = document.getElementById('changeable-color-brush-button')
-        const colorPalette = document.getElementById('palette');
-        const colorEraser = document.getElementById('color-eraser-button');
-        const opacityInput = document.getElementById('opacity');
-
-        const authButton = document.getElementById('auth-button');
-        const authButtonImg = document.getElementById('auth-button-img');
-        const postButton = document.getElementById('post-button');
-        const postButtonImg = document.getElementById('post-button-img');
-        const postingDummyButton = document.getElementById('posting-dummy-button');
-        const postingDummyButtonImg = document.getElementById('posting-dummy-button-img');
-        const progressBar = document.getElementById('progress-bar-line');
         const hashtagLine = document.getElementById('hashtag-line');
         const messageLine = document.getElementById('message-line');
         const copyHashtagButton = document.getElementById('copy-hashtag');
 
         const modals = document.getElementsByClassName('modal');
 
-        const destinationServerSettingDialogModal = document.getElementById('destination-server-setting-dialog-modal');
-        const closeDestinationServerDialogButton = document.getElementById('close-destination-server-dialog-button');
-        const destinationServerSelect = document.getElementById('destination-server-select');
-        const destinationServerAuthButton = document.getElementById('destination-server-auth-button');
-        const addDestinationServerButton = document.getElementById('add-destination-server-button');
-        const addDestinationServerDialogModal = document.getElementById('add-destination-server-dialog-modal');
-        const destinationServerUrlInput = document.getElementById('destination-server-url-input');
-        const addAuthDestinationServerButton = document.getElementById('add-auth-destination-server-button');
-        const closeAddDestinationServerDialogButton = document.getElementById('close-add-destination-server-dialog-button');
-        const backDestinationServerButton = document.getElementById('back-destination-server-button');
-
-        const postDialogModal = document.getElementById('post-dialog-modal');
-        const closePostDialogButton = document.getElementById('close-post-dialog-button');
-        const destinationServerResetButton = document.getElementById('destination-server-reset-button');
-        const previewImg = document.getElementById("preview-img");
-        const commentTextarea = document.getElementById('comment-textarea');
-        const visibilitySelect = document.getElementById('visibility-select');
-        const isSensitiveCheckbox = document.getElementById('is-sensitive-checkbox')
-        const submitButton = document.getElementById('submit-button');
-
-        //引数の取得
-        const params = new URLSearchParams(document.location.search);
-        const code = params.get('code');
-        const miauthSession = params.get('session');
 
         //重要な設定
-        const blackPenColor = "#36364A";
-        const backgroundColor = "#F2EEE6";        
-        const PaletteColors = ["#FBA9A7", "#FAC48D", "#F9F19A", "#7BB07F", "#9DBEEA", "#D4C8F4","#F0C6F0"];
-        const initialChangeableColor = "#C3C3C3";
+        const backgroundColor = "#111117";
+        const fillColor = "#36364A";
+        const penColor = "#3FEFFE";
         const [canvasWidth,canvasHeight] = [720,720];
-        const undoLimit = 1;
         const smoothingFactor = 0.375;
-        const hashtag = '#rakugaki_pao';
-        const defaultSettings = {
-            publishingLevel: 'public',
-            isSensitive: false,
-            postComment: "\n\n"+hashtag+" "
-        };
+        const hashtag = '#pao_board';
+        const toolDiameter = 2; //描画ツールの直径(px)
 
         //キャンバスの初期化
         canvasContainer.style.width = canvasWidth + 'px';
@@ -222,147 +89,29 @@
         [combinedCanvas.width, combinedCanvas.height] = [canvasWidth, canvasHeight];
         [blackLayer.width, blackLayer.height] = [canvasWidth, canvasHeight];
         [colorLayer.width, colorLayer.height] = [canvasWidth, canvasHeight];
-        [activeStrokeLayer.width, activeStrokeLayer.height] = [canvasWidth, canvasHeight];
         const ctxBlack = blackLayer.getContext('2d',{ willReadFrequently: true });
         const ctxColor = colorLayer.getContext('2d',{ willReadFrequently: true });
-        const ctxActiveStroke = activeStrokeLayer.getContext('2d');
         const ctxCombined = combinedCanvas.getContext('2d');
+
+
+
 
                 
         //ストレージキー
         const localstorageKeyBlack = 'blacklayerlskey';
-        const localstorageKeyColor = 'colorlayerlskey';
-        const localstorageKeyAccessToken = 'accesstokenkey';
         const sessionstorageKeyLastClearTime = 'lastcleartimekey';
-        const localstorageKeyDestinationServerName = 'destinationservernamekey';
-
-
-        //投稿に関する情報
-        const mastodonServerDataMain = {
-            "mistodon.cloud": {
-                app_type: "mistodon",
-                hostname: "mistodon.cloud",
-                client_id:"kxcPRIOf0YfLnd_RP9kzjycaRdxiAAJfS2yPCYopB-4",
-                client_secret:"lDCqUUok59GkUUfbOcLKVU4n1H8vOM3s97bB6KC6bZ4",
-            },            
-            "fedibird.com": {
-                app_type: "mastodon",
-                hostname: "fedibird.com",
-                client_id:"5BeHayqwh2hVzj_rWA_JwITrUs1u5jX3nkFd32b6JTE",
-                client_secret:"PsMoMYAj4qXwBH36NGGAhJA2SjytPvbY9m9GAJ1Erl8",
-            },
-            "pawoo.net": {
-                app_type: "mastodon",
-                hostname: "pawoo.net",
-                client_id:"zOFX6S8B6SIrRNktQbbEAy_R_Nuah9yHWeuDsFCqHpM",
-                client_secret:"3P6EWn-MA3ZK8HA1RDNdilnAzfOM8OGkmw9Ipr-uWvw",
-            },
-        };
-        const mastodonServerDataDev = {
-            "mistodon.cloud": {
-                app_type: "mistodon",
-                hostname: "mistodon.cloud",
-                client_id:"ahEQR-_jEZYLC1UjgBx9M5yJGFtmzxunRPCjqGz-ZAY",
-                client_secret:"D9_84dg-8gDfuXe4Qp2wrEwbWfJEMxdIoNjlCHHBgt0",
-            },
-            "fedibird.com": {
-                app_type: "mastodon",
-                hostname: "fedibird.com",
-                client_id:"kS_5YdvHvVYor577pNlro2FXEazbp91f79QACC4gkKo",
-                client_secret:"ciPBpCvLc6UuAY5ljuKH6wXffCcVC_-9CswTmgvO7Gw",
-            },
-            "pawoo.net": {
-                app_type: "mastodon",
-                hostname: "pawoo.net",
-                client_id:"NpSF1ecT6DMWbJ_jubfst8izkLMT0wucNvlplW0CIoA",
-                client_secret:"yVuZae0um2mwTHtEWVHi614FwG4OpVnZiY4E-paGaRQ",
-            },
-        };
-        const misskeyServerData = {
-            "tanoshii.site": {
-                app_type: "misskey",
-                hostname: "tanoshii.site",
-            },
-            "sushi.ski": {
-                app_type: "misskey",
-                hostname: "sushi.ski",
-            },
-            "misskey.io": {
-                app_type: "misskey",
-                hostname: "misskey.io",
-            },
-            "misskey.favskey.online": {
-                app_type: "misskey",
-                hostname: "misskey.favskey.online",
-            },
-        };
-        let serverData = {...mastodonServerDataMain,...misskeyServerData};
-        let redirect_uri = "https://kurajo.ivory.ne.jp/rakugaki_pao/index.html";
-        if( window.location.origin.includes('cos-phi.github.io') ){
-            serverData = {...mastodonServerDataDev,...misskeyServerData};
-            redirect_uri = "https://cos-phi.github.io/rakugaki_pao/index.html";
-        }
-
-        const destinationServerName = window.localStorage.getItem(localstorageKeyDestinationServerName) || "mistodon.cloud";
         
-        let app_info = serverData[destinationServerName] ?? {app_type: "misskey", hostname: destinationServerName};
-        let hostName = app_info.hostname;
-        let serverUrl = "https://" + hostName; 
-        
-        const localstorageKeyMisskeyAccessTokenPrefix = 'destinationmisskeyserveraccesstokenkey_';
-        const localstorageKeyMisskeyAccessToken = localstorageKeyMisskeyAccessTokenPrefix + destinationServerName;
-        const miauth_name = "rakugaki_pao";
-        const miauth_permission = ["write:notes", "write:drive"];
-
         const manualUrl = "manual.html"
-        const shareUrl = toDirectoryPathSimple(redirect_uri);
+        const shareUrl = "https://dummyurl.example.com/pao_board"
         
-        destinationServerSelect.value = destinationServerName;
-        authButtonImg.src = "image/"+ app_info.app_type + "_disable.svg";
-        postButtonImg.src = "image/"+ app_info.app_type + ".svg";
-        postingDummyButtonImg.src = "image/"+ app_info.app_type + "_active.svg";
-        postButton.title = hostName + "に投稿";
-        destinationServerResetButton.textContent = hostName;
-
-
         //変数の初期化
-        let outputFileName = 'rakugaki_pao.png';
+        let outputFileName = 'pao_board.png';
         let isDrawing = false;
         let [lastX,lastY] =[0,0];
         let [beforeLastX,beforeLastY] = [0,0];
-        let ctxCurrentLayer = ctxBlack;
-        let currentColor = blackPenColor;
-        let curPaletteColor = initialChangeableColor;
-        let prevColor = PaletteColors[0];
-        colorPalette.value = curPaletteColor;
-        let isEraser = false;
-        let undoStack = [];
-        let accessToken = null;
-
-        if(null === window.sessionStorage.getItem(sessionstorageKeyLastClearTime)){
-            setLastClearTime();
-        }
-        
-        let publishingLevel = defaultSettings.publishingLevel;
-        let isSensitive = defaultSettings.isSensitive;
-        let postComment = defaultSettings.postComment;
-
-        let toolSizesParam = {
-            blackPen: 2,
-            colorBrush: 5,
-            blackEraser: 4,
-            colorEraser: 6
-        };
-        let toolDiameter = calcToolSize(toolSizesParam.blackPen);
-
-        let toolOpacity = {
-            blackPen: 1,
-            colorBrush: 1,
-        };
 
         //イベントリスナーの登録
         clearButton.addEventListener('click', clearCanvas);
-        manualButton.addEventListener('click', openManual);
         
         copyButton.addEventListener('click', copyImage);
         saveButton.addEventListener('click', saveImage);
@@ -379,70 +128,13 @@
         blackLayer.addEventListener('touchcancel', stopDrawingTouch);
         blackLayer.addEventListener('touchmove', updateCursorTouch);
 
-        undoButton.addEventListener('mousedown', undo);
-        toolSizeParamInput.addEventListener('input', changeToolSize);
-        blackPenButton.addEventListener('mousedown', selectBlackPen);
-        blackEraser.addEventListener('mousedown', selectBlackEraser);
-        createColorBrushButtons();
-        createChangeableColorBrushButton();
-        colorPalette.addEventListener('input', inputColorPalette, false);
-        colorEraser.addEventListener('mousedown', selectColorEraser);
-        opacityInput.addEventListener('input', inputOpacity);
-
-        authButton.addEventListener('click', openDestinationServerSettingDialog); 
-        destinationServerAuthButton.addEventListener('click', authDestinationServer);    
-        closeDestinationServerDialogButton.addEventListener('click',closeDialog);
-
-        addDestinationServerButton.addEventListener('click',openAddDestinationServerDialog);
-        addAuthDestinationServerButton.addEventListener('click',authAddDestinationServer);
-        closeAddDestinationServerDialogButton.addEventListener('click',closeDialog);
-        backDestinationServerButton.addEventListener('click',openDestinationServerSettingDialog);
-        
-        postButton.addEventListener('click', openPostDialog); 
-        destinationServerResetButton.addEventListener('click', openDestinationServerSettingDialog);
-        submitButton.addEventListener('click', postToDestinationServer);
-        closePostDialogButton.addEventListener('click',closeDialog);
-
-        copyHashtagButton.addEventListener('click',copyHastag);
-
-        //ショートカットキーの登録
-        document.addEventListener('keydown', event => {
-            if (event.target.tagName === 'TEXTAREA' || event.target.tagName === 'INPUT') {
-                return;
-            }
-            if (event.code === 'KeyQ') {
-                isEraser = false;
-                updateToolsState();
-            }else if (event.code === 'KeyE') {
-                isEraser = true;
-                updateToolsState();
-            }else if (event.code === 'KeyZ') {
-                undo();
-            }else if(event.code === 'KeyX'){
-                isEraser = !isEraser;
-                updateToolsState();
-            }else if(event.code === 'KeyC'){
-                toggleTool();
-            }else if(event.code === 'KeyA'){
-                decreaseToolSize();
-            }else if(event.code === 'KeyD'){
-                increaseToolSize();
-            }else if(event.code === 'KeyW'){
-                increaseToolOpacity();
-            }else if(event.code === 'KeyS'){
-                decreaseToolOpacity();
-            }else if(event.code === 'KeyR'){
-                reloadPage();
-            }
-        });
-
         //初期化
-        updateActiveToolButton();
-        updateToolSize();
         restoreLocalstorage();
-        initializePostDialog();
-        initializeModal();
-
+        if(null === window.sessionStorage.getItem(sessionstorageKeyLastClearTime)){
+            setLastClearTime();
+            initializeCanvasLayers();
+        }
+        initializeBackgroundLayer();
 
         //関数
 
@@ -451,90 +143,51 @@
             isDrawing = true;
             [lastX, lastY] = [x, y];
             [beforeLastX,beforeLastY] = [x,y]
-            saveState();
             stipple(x,y);
         }
 
         function draw(x, y) {
             if (!isDrawing) return;
-            if (isEraser) {
-                ctxCurrentLayer.beginPath();
-                ctxCurrentLayer.moveTo(lastX, lastY);
-                ctxCurrentLayer.lineTo(x, y);
-                ctxCurrentLayer.globalCompositeOperation = 'destination-out';
-                ctxCurrentLayer.strokeStyle = currentColor;
-                ctxCurrentLayer.lineWidth = toolDiameter;
-                ctxCurrentLayer.lineCap = 'round';
-                ctxCurrentLayer.stroke();
-            }else { 
-                ctxActiveStroke.beginPath();
-                ctxActiveStroke.moveTo(lastX, lastY);
-
-                const travelSquared = (x-lastX)**2 + (y-lastY)**2;
-                if(64 < travelSquared){
-                    const [xM,yM] = [lastX + (x - beforeLastX)/4, lastY + (y - beforeLastY)/4]; 
-                    ctxActiveStroke.lineTo(xM, yM); //移動量が多いとき、補間点を作って経由します
-                    [lastX,lastY] = [xM,yM];
-                }else if( ctxCurrentLayer === ctxBlack ){
-                    x = x*(1-smoothingFactor) + lastX*smoothingFactor;
-                    y = y*(1-smoothingFactor) + lastY*smoothingFactor;
-                }
-                ctxActiveStroke.lineTo(x, y);
-                ctxActiveStroke.globalCompositeOperation = 'source-over';
-                ctxActiveStroke.strokeStyle = currentColor;
-                ctxActiveStroke.lineWidth = toolDiameter;
-                ctxActiveStroke.lineCap = 'round';
-                ctxActiveStroke.lineJoin = 'round';
-                ctxActiveStroke.stroke();
+            ctxBlack.beginPath();
+            ctxBlack.moveTo(lastX, lastY);
+            const travelSquared = (x-lastX)**2 + (y-lastY)**2;
+            if(64 < travelSquared){
+                const [xM,yM] = [lastX + (x - beforeLastX)/4, lastY + (y - beforeLastY)/4]; 
+                ctxBlack.lineTo(xM, yM); //移動量が多いとき、補間点を作って経由します
+                [lastX,lastY] = [xM,yM];
+            }else{
+                console.log(`Smoothed  (${x},${y})`);
+                x = x*(1-smoothingFactor) + lastX*smoothingFactor;
+                y = y*(1-smoothingFactor) + lastY*smoothingFactor;
+                console.log(`to (${x},${y})`);
             }
+            ctxBlack.lineTo(x, y);
+            ctxBlack.globalCompositeOperation = 'destination-out';
+            ctxBlack.lineWidth = toolDiameter;
+            ctxBlack.lineCap = 'round';
+            ctxBlack.stroke();
+            
             [beforeLastX,beforeLastY] = [lastX,lastY];
             [lastX, lastY] = [x, y];
         }
 
         function stipple(x,y){
-            if (isEraser) {
-                ctxCurrentLayer.beginPath();
-                ctxCurrentLayer.moveTo(x, y);
-                ctxCurrentLayer.globalCompositeOperation = 'destination-out';
-                ctxCurrentLayer.strokeStyle = currentColor;
-                ctxCurrentLayer.fillStyle = currentColor;
-                ctxCurrentLayer.arc(x,y, toolDiameter*0.5, 0, 2*Math.PI, true);
-                ctxCurrentLayer.closePath();
-                ctxCurrentLayer.fill();
-            }else{    
-                ctxActiveStroke.beginPath();
-                ctxActiveStroke.moveTo(x, y);
-                ctxActiveStroke.globalCompositeOperation = 'source-over';
-                ctxActiveStroke.strokeStyle = currentColor;
-                ctxActiveStroke.fillStyle = currentColor;
-                ctxActiveStroke.arc(x,y, toolDiameter*0.5, 0, 2*Math.PI, true);
-                ctxActiveStroke.closePath();
-                ctxActiveStroke.fill();
-            }
-        }
-
-        function calcToolSize(toolSizeParam) {
-            const size = 2**parseInt(toolSizeParam);
-            return size;
+            ctxBlack.beginPath();
+            ctxBlack.moveTo(x, y);
+            ctxBlack.globalCompositeOperation = 'destination-out';
+            ctxBlack.arc(x,y, toolDiameter*0.5, 0, 2*Math.PI, true);
+            ctxBlack.closePath();
+            ctxBlack.fill();
         }
 
         function stopDrawing() {
             isDrawing = false;
-            dryStroke();
             saveLocalstorage();
         }
 
         function stopDrawingMouseOut(){
             stopDrawing();
             setCursorInvisible();
-        }
-        
-        function dryStroke() {
-            ctxCurrentLayer.globalCompositeOperation = 'source-over';
-            ctxCurrentLayer.globalAlpha = ctxCurrentLayer === ctxBlack ? toolOpacity.blackPen : toolOpacity.colorBrush;
-            ctxCurrentLayer.drawImage(activeStrokeLayer,0,0);
-            ctxCurrentLayer.globalAlpha = 1.0;
-            ctxActiveStroke.clearRect(0, 0, blackLayer.width, blackLayer.height);
         }
 
         function updateCursor(x, y) {            
@@ -586,7 +239,6 @@
         //製作中の絵の保存・読込に関する関数
         function saveLocalstorage() {
             saveLayeronlocalstorage(localstorageKeyBlack,blackLayer);    
-            saveLayeronlocalstorage(localstorageKeyColor,colorLayer);    
         }
         
         function saveLayeronlocalstorage(localstoragekey,layer){
@@ -595,12 +247,6 @@
 
         function restoreLocalstorage() {
             restoreLayeronlocalstorage(localstorageKeyBlack,blackLayer);
-            restoreLayeronlocalstorage(localstorageKeyColor,colorLayer);
-            accessToken = window.localStorage.getItem(localstorageKeyAccessToken);
-            const misskeyAccessToken = window.localStorage.getItem(localstorageKeyMisskeyAccessToken);
-            if( misskeyAccessToken != null ){
-                accessToken = misskeyAccessToken;
-            }
         }
 
         function restoreLayeronlocalstorage(localstoragekey,layer) {
@@ -614,66 +260,40 @@
             }
         }
         
+        function initializeCanvasLayers(){
+            // ensure we draw normally when initializing (drawing operations
+            // may set globalCompositeOperation to 'destination-out' for erasing)
+            ctxBlack.globalCompositeOperation = 'source-over';
+            ctxBlack.fillStyle = fillColor;
+            ctxBlack.fillRect(0,0, canvasWidth,canvasHeight);
+            // after initializing background, leave composite mode for drawing
+            // draw operations explicitly set destination-out when erasing, so
+            // we don't change it here permanently.
+
+            console.log('Canvas layers initialized.');
+        }
+
+        function initializeBackgroundLayer(){
+            ctxColor.globalCompositeOperation = 'source-over';
+            ctxColor.fillStyle = penColor;
+            ctxColor.fillRect(0,0, canvasWidth,canvasHeight);
+            console.log('Background layer initialized.');
+        }
+        
         //リロード・URLクリーンアップに関する関数
         function reloadPage(){
             saveLocalstorage();
             location.reload()
         }
 
-        function cleanUrlAndReload(){
-            saveLocalstorage();
-            location.href = toDirectoryPathSimple(redirect_uri);
-        }
-        
-        function toDirectoryPathSimple(fullUrl) {
-            const urlObj = new URL(fullUrl);
-            const directoryPathname = urlObj.pathname.substring(0,urlObj.pathname.lastIndexOf('/') + 1);
-            return urlObj.protocol + '//' + urlObj.host + directoryPathname;
-        }
-
-        //Undo機能に関する関数
-        function saveState() {
-            saveStateUnlimited();
-            while (undoStack.length > undoLimit) {
-                undoStack.shift();
-            }
-        }
-
-        function saveStateUnlimited() {
-            undoStack.push({
-                black: ctxBlack.getImageData(0, 0, blackLayer.width, blackLayer.height),
-                color: ctxColor.getImageData(0, 0, colorLayer.width, colorLayer.height)
-            });
-            activateUndoButton();
-        }
-
-        function undo() {
-            if (undoStack.length === 0) return;
-            const state = undoStack.pop();
-            ctxBlack.putImageData(state.black, 0, 0);
-            ctxColor.putImageData(state.color, 0, 0);
-            if (undoStack.length === 0) {
-                disactivateUndoButton();
-            }
-        }
-
-        function activateUndoButton() {
-            undoButton.style.opacity = 1.0;
-            undoButton.style.pointerEvents = '';
-        }
-        
-        function disactivateUndoButton() {
-            undoButton.style.opacity = 0.3;
-            undoButton.style.pointerEvents = 'none';
-        }
 
         //キャンバスクリア・経過時間表示に関する関数
         function clearCanvas() {
-            saveStateUnlimited();
-            saveLocalstorage();
-            ctxBlack.clearRect(0, 0, blackLayer.width, blackLayer.height);
-            ctxColor.clearRect(0, 0, colorLayer.width, colorLayer.height);
+            initializeCanvasLayers();
+            // update last clear time and persist cleared canvas in localStorage
             setLastClearTime();
+            saveLocalstorage();
+            showMessage('キャンバスをクリアしました');
         }
 
         function setLastClearTime(){
@@ -698,270 +318,7 @@
             location.href = manualUrl;
         }
 
-        //ペイントツール選択に関する関数
-        function setColor(color) {
-            if(color != blackPenColor){
-                ctxCurrentLayer = ctxColor;
-                colorPalette.value = color;
-                prevColor = color;
-            }else{
-                ctxCurrentLayer = ctxBlack;
-            }
-            currentColor = color;
-        }
 
-        function selectBlackPen() {
-            ctxCurrentLayer = ctxBlack;
-            isEraser = false;
-            setColor(blackPenColor);
-            updateToolsState();
-        }
-
-        function selectBlackEraser() {
-            ctxCurrentLayer = ctxBlack;
-            isEraser = true;
-            updateToolsState();
-        }
-
-        function selectChangeableColorBrushButton() {
-            ctxCurrentLayer = ctxColor;
-            isEraser = false;
-            setColor(curPaletteColor);
-            updateToolsState();
-        }
-
-        function inputColorPalette() {
-            curPaletteColor = colorPalette.value;
-            ctxCurrentLayer = ctxColor;
-            isEraser = false;
-            setColor(curPaletteColor);
-            updateChangeableColorBrushButton(curPaletteColor);
-            updateToolsState();
-        }
-
-        function selectColorEraser() {
-            ctxCurrentLayer = ctxColor;
-            isEraser = true;
-            updateToolsState();
-        }
-
-        function toggleTool(){
-            const originalIsEraser = isEraser;
-            if (ctxCurrentLayer === ctxBlack){
-                ctxCurrentLayer = ctxColor;
-                setColor(prevColor);
-            }else {
-                ctxCurrentLayer = ctxBlack;
-                setColor(blackPenColor);
-            }
-            isEraser = originalIsEraser;
-            updateToolsState();
-        }
-
-        function updateActiveToolButton() {
-            document.querySelectorAll('.color-brush-button, #black-pen-button, #black-eraser-button, #color-eraser-button,#changeable-color-brush-button').forEach(btn => btn.classList.remove('active'));
-            if (isEraser) {
-                if (ctxCurrentLayer === ctxBlack) {
-                    blackEraser.classList.add('active');
-                } else {
-                    colorEraser.classList.add('active');
-                }
-            } else if (currentColor === blackPenColor) {
-                blackPenButton.classList.add('active');
-            } else {
-                const activeColorBtn = document.querySelector(`.color-brush-button[data-color="${currentColor}"]`);
-                if (activeColorBtn) {
-                    activeColorBtn.classList.add('active');
-                }else{
-                    changeableColorBrushButton.classList.add('active');
-                }
-            }
-        }
-        
-        //カラーブラシボタン生成に関する関数
-        function createColorBrushButtons() {
-            PaletteColors.forEach(color => {
-                const button = document.createElement('button');
-                button.className = 'color-brush-button';
-                button.style.backgroundColor = color;
-                button.dataset.color = color;  // データ属性を追加
-                button.addEventListener('mousedown', () => {
-                    isEraser = false;
-                    setColor(color);
-                    updateToolsState();
-                });
-                colorBrushButtonsContainer.appendChild(button);
-            });
-        }
-
-        function createChangeableColorBrushButton() {
-            changeableColorBrushButton.style.backgroundColor = curPaletteColor;
-            changeableColorBrushButton.dataset.color = curPaletteColor;
-            colorBrushButtonsContainer.appendChild(changeableColorBrushButton);
-            changeableColorBrushButton.addEventListener('mousedown', selectChangeableColorBrushButton);
-        }
-        
-        //ツールサイズ変更に関する関数
-        function changeToolSize() {
-            const sizeParam = parseInt(toolSizeParamInput.value);
-            if (isEraser) {
-                if (ctxCurrentLayer === ctxBlack) {
-                    toolSizesParam.blackEraser = sizeParam;
-                } else {
-                    toolSizesParam.colorEraser = sizeParam;
-                }
-            } else {
-                if (ctxCurrentLayer === ctxBlack) {
-                    toolSizesParam.blackPen = sizeParam;
-                } else {
-                    toolSizesParam.colorBrush = sizeParam;
-                }
-            }
-            toolDiameter = calcToolSize(sizeParam);
-            previewCursorSize();
-            updateToolSizeToolTip();
-        }
-
-        function increaseToolSize(){
-            varyToolSizeParam(1);               
-            updateToolSize();
-            previewCursorSize();
-            updateToolSizeToolTip();
-        }
-
-        function decreaseToolSize(){
-            varyToolSizeParam(-1);
-            updateToolSize();
-            previewCursorSize();
-            updateToolSizeToolTip();
-        }
-
-        function updateToolSize() {
-            if (isEraser) {
-                toolSizeParamInput.value = ctxCurrentLayer === ctxBlack ? toolSizesParam.blackEraser : toolSizesParam.colorEraser;
-            } else {
-                toolSizeParamInput.value = ctxCurrentLayer === ctxBlack ? toolSizesParam.blackPen : toolSizesParam.colorBrush;
-            }
-            toolDiameter = calcToolSize(toolSizeParamInput.value);
-            updateToolSizeToolTip();
-        }
-
-        function updateToolSizeToolTip() {
-            toolSizeParamInput.title = toolDiameter+'px';
-        }
-
-        function clampToolSizeParam(toolSizeParam){
-            if( toolSizeParam < 0 ){
-                return 0;
-            }else if( toolSizeParam > 7){
-                return 7;
-            }else{
-                return toolSizeParam;
-            }
-        }
-
-        function varyToolSizeParam(variation){
-            if (isEraser) {
-                if (ctxCurrentLayer === ctxBlack) {
-                    toolSizesParam.blackEraser = clampToolSizeParam(toolSizesParam.blackEraser + variation);
-                }else{
-                    toolSizesParam.colorEraser = clampToolSizeParam(toolSizesParam.colorEraser + variation);
-                }
-            }else{
-                if (ctxCurrentLayer === ctxBlack) {
-                    toolSizesParam.blackPen = clampToolSizeParam(toolSizesParam.blackPen + variation);
-                } else {
-                    toolSizesParam.colorBrush = clampToolSizeParam(toolSizesParam.colorBrush + variation);
-                }
-            }
-        }
-        
-        //不透明度に関する関数
-        function inputOpacity() {
-            if (ctxCurrentLayer === ctxBlack) {
-                toolOpacity.blackPen = opacityInput.value;          
-            } else {
-                toolOpacity.colorBrush = opacityInput.value;
-            }
-            updateToolOpacity();
-        }
-
-        function updateToolOpacity(){
-            opacityInput.value = ctxCurrentLayer === ctxBlack ? toolOpacity.blackPen : toolOpacity.colorBrush;
-            updateButtonOpacity();
-            activeStrokeLayer.style.opacity = opacityInput.value;
-        }
-
-        function increaseToolOpacity(){
-            if (ctxCurrentLayer === ctxBlack && toolOpacity.blackPen < 1){
-                toolOpacity.blackPen += 0.4;
-                updateToolsState();
-            }
-            if (ctxCurrentLayer === ctxColor && toolOpacity.colorBrush < 1){
-                toolOpacity.colorBrush += 0.4;
-                updateToolsState();
-            }
-        }
-
-        function decreaseToolOpacity(){
-            if (ctxCurrentLayer === ctxBlack && toolOpacity.blackPen > 0.2){
-                toolOpacity.blackPen -= 0.4;
-                updateToolsState();
-            }
-            if (ctxCurrentLayer === ctxColor && toolOpacity.colorBrush > 0.2){
-                toolOpacity.colorBrush -= 0.4;
-                updateToolsState();
-            }
-        }
-
-        //ツールボタンの不透明度表示に関する関数
-        function updateButtonOpacity(){
-            blackPenButton.style.backgroundColor =`rgb(${hexToRgba(blackPenColor,toolOpacity.blackPen)})`;
-            const buttons = document.querySelectorAll('.color-brush-button');
-            buttons.forEach(button => {
-                button.style.backgroundColor = `rgb(${hexToRgba(button.dataset.color,toolOpacity.colorBrush)})`;
-            });
-        }
-        
-        function updateChangeableColorBrushButton(color){
-            changeableColorBrushButton.style.backgroundColor = `rgb(${hexToRgba(color,toolOpacity.colorBrush)})`;
-            changeableColorBrushButton.dataset.color = color;
-        }
-
-        function hexToRgba(inputColor, opacity) {
-            const r = parseInt(inputColor.slice(1, 3), 16);
-            const g = parseInt(inputColor.slice(3, 5), 16);
-            const b = parseInt(inputColor.slice(5, 7), 16);
-            return `${r} ${g} ${b} / ${opacity}`;
-        }
-
-        //カーソルの見た目に関する関数
-        function previewCursorSize(){
-            let previewX = canvasWidth/2;
-            let previewY = canvasHeight*0.875;
-            if (isEraser) {
-                if (ctxCurrentLayer === ctxBlack) {
-                    previewX = canvasWidth*0.375;
-                } else {
-                    previewX = canvasWidth*0.875;
-                }
-            } else {
-                if (ctxCurrentLayer === ctxBlack) {
-                    previewX = canvasWidth*0.125;
-                } else {
-                    previewX = canvasWidth*0.625;
-                }
-            }
-            updateCursor(previewX, previewY);
-        }
-
-        function setCursorBorderStyle(){
-            if (isEraser) {
-                cursor.style.borderStyle = 'dotted';
-            } else {
-                cursor.style.borderStyle = 'solid';
-            }
-        }
         
         function setCursorVisible(){
             cursor.style.borderWidth = '2px';
@@ -971,14 +328,7 @@
             cursor.style.borderWidth = '0px';
         }
 
-        //ツールの状態更新に関する関数
-        function updateToolsState() {
-            updateActiveToolButton();
-            setCursorBorderStyle();
-            updateToolSize();
-            updateToolOpacity();
-            previewCursorSize();
-        }
+
 
         //絵の保存に関する関数
         function combineCanvas() {
@@ -1003,7 +353,7 @@
         function setOutputFileName(){
             const nowTime = new Date();
             const timeString = nowTime.toLocaleString("ja-JP", {year: "numeric",month: "2-digit", day: "2-digit", hour:"2-digit", minute:"2-digit"}).replaceAll('/', '').replaceAll(':','').replaceAll(' ','-');
-            outputFileName = timeString + '_rakugaki_pao(' + getElapsedTimeMinFromLastClearTime() +'min).png';
+            outputFileName = timeString + '_pao_board(' + getElapsedTimeMinFromLastClearTime() +'min).png';
         }
 
 
@@ -1037,7 +387,7 @@
             navigator.share({
                 url: shareUrl,
                 text: hashtag,
-                title: 'rakugaki_pao',
+                title: 'pao_board',
                 files: [imageFile],
             }).then(() => {
                 console.log("共有しましたの");
@@ -1090,384 +440,8 @@
             }
         }
 
-        function activatePostingProgressBar(){
-            progressBar.style.visibility = 'visible';
-            postButton.style.display = 'none';
-            postingDummyButton.style.display = '';
-        }
-        
-        function deactivatePostingProgressBar(){
-            progressBar.style.visibility = 'hidden';
-            postButton.style.display = '';
-            postingDummyButton.style.display = 'none';
-        }
-
-        //投稿ダイアログ
-        function openPostDialog() {
-            showElapsedTimeFromLastClearTime();
-            combineCanvas();    
-            const dataURL = combinedCanvas.toDataURL('image/png');
-            previewImg.src = dataURL;
-            postDialogModal.style.display = 'block';
-        }
-
-        function initializePostDialog() {
-            visibilitySelect.value = defaultSettings.publishingLevel;
-            isSensitiveCheckbox.checked = defaultSettings.isSensitive;
-            commentTextarea.value = defaultSettings.postComment;
-        }
-
-        function savePostSetting() {
-            publishingLevel = visibilitySelect.value;
-            isSensitive = isSensitiveCheckbox.checked;
-            postComment = commentTextarea.value.trim() || defaultSettings.postComment;
-        }
-
-        //投稿先選択ダイアログ
-        function openDestinationServerSettingDialog() {
-            closeDialog();
-            populateDestinationServerSelect();
-            destinationServerSettingDialogModal.style.display = 'block';
-        }
-
-        function populateDestinationServerSelect() { //サーバーリストをselectに反映
-            destinationServerSelect.innerHTML = ''; // 既存のオプションをクリア
-            for (const key in serverData) {
-                if (serverData.hasOwnProperty(key)) {
-                    const server = serverData[key];
-                    const option = document.createElement("option");
-                    option.value = key;
-                    let label = key;
-                    //if (server.app_type === "misskey") label += " (Misskey)";
-                    //if (server.app_type === "mastodon" || server.app_type === "mistodon") label += " (Mastodon)";
-                    option.textContent = label;
-                    destinationServerSelect.appendChild(option);
-                }
-            }
-        }
-
-        function authDestinationServer() {
-            const newServerName = destinationServerSelect.value;
-            const newAppInfo = serverData[newServerName];
-            
-            app_info = newAppInfo;
-            hostName = app_info.hostname;
-            serverUrl = "https://" + hostName;
-            window.localStorage.setItem(localstorageKeyDestinationServerName,destinationServerSelect.value);
-            window.localStorage.removeItem(localstorageKeyAccessToken);
-            if (window.localStorage.getItem(localstorageKeyMisskeyAccessTokenPrefix + hostName) != null) {
-                reloadPage();
-            } else if (app_info.app_type === "misskey") {
-                startMiAuth();
-            } else {
-                getAuthCodeRedirect();
-            }
-        }
-
-        //投稿先追加ダイアログ
-        function openAddDestinationServerDialog() {
-            closeDialog();
-            addDestinationServerDialogModal.style.display = 'block';
-        }
-
-        async function authAddDestinationServer() {
-            addAuthDestinationServerButton.disabled = true;
-            const inputUrlString = normalizeUrl(destinationServerUrlInput.value);
-            let newUrl;
-            try {
-                newUrl = new URL(inputUrlString);
-            } catch (e) {
-                alert('MisskeyサーバーのURLを入力してくださいまし。');
-                addAuthDestinationServerButton.disabled = false;
-                return; 
-            }
-            const isMisskey = await isMisskeyUrl(newUrl.origin);
-            if (isMisskey) {
-                console.log('Misskey server!');
-                window.localStorage.setItem(localstorageKeyDestinationServerName,newUrl.hostname);
-                window.localStorage.removeItem(localstorageKeyAccessToken);
-                serverUrl = newUrl.origin;     
-                if (window.localStorage.getItem(localstorageKeyMisskeyAccessTokenPrefix + newUrl.hostname) != null) {
-                    reloadPage();
-                }else{       
-                    startMiAuth();
-                }
-            }else{
-                alert('このURLはMisskeyサーバーではないみたいですの。MisskeyサーバーのURLを入力してくださいまし。/ True URL is not Misskey server. Please input Misskey server URL.');
-                addAuthDestinationServerButton.disabled = false;
-                return;
-            }
-        }
-
-        async function isMisskeyUrl(url) {
-            const apiMetaUrl = `${url}/api/meta`;
-            try {
-                const response = await fetch(apiMetaUrl, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: "{}"
-                });
-                if (!response.ok) return false;
-                const data = await response.json();
-                const misskeyKeys = ["version", "name", "features"];
-                const hitCount = misskeyKeys.filter(key => key in data).length;
-                return hitCount >= 2;   // Misskey 固有のキーが複数存在していれば Misskey と判定
-            } catch (e) {
-                return false; // fetch 失敗 → Misskey でない
-            }
-        }
-        
-        function normalizeUrl(input) {
-            if (input.startsWith("https://")) {
-                return inpu.trim();
-            }
-            return "https://" + input.trim();
-        }
-
-
-        //ダイアログ共通
-        function closeDialog() {
-            for (let i = 0; i < modals.length; i++) {
-                modals[i].style.display = 'none'; 
-            }
-        }
-
-        function initializeModal(){
-            for (let i = 0; i < modals.length; i++) {
-                //modals[i].style.display = 'none'; // 各要素を非表示にする
-                modals[i].addEventListener('click', (event) => {
-                    if (event.target === modals[i]) {
-                        closeDialog();
-                    }
-                });
-            }
-        }
-
-        //投稿処理
-        function postToDestinationServer() {
-            savePostSetting();
-            combineCanvas();
-            const dataURL = combinedCanvas.toDataURL('image/png');
-            if (app_info.app_type === "misskey") {
-                postImageToMisskey(dataURL, accessToken);
-            } else {
-                postImage(dataURL, accessToken);
-            }
-        }
-
-        function postImage(dataURL, accessToken) {
-            setOutputFileName();
-            activatePostingProgressBar();
-            closeDialog();
-            showElapsedTimeFromLastClearTime();
-            fetch(`${serverUrl}/api/v1/media`, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${accessToken}`,
-                    },
-                    body: (() => {
-                        const formData = new FormData();
-                        formData.append('file', dataURLToBlob(dataURL), outputFileName);
-                        return formData;
-                    })()
-            })
-            .then(response => { 
-                if (!response.ok) {
-                    accessToken = null;
-                    window.localStorage.removeItem(localstorageKeyAccessToken);
-                    throw "PostError";
-                }
-                return response.json()
-            })
-            .then(data => {
-                return fetch(`${serverUrl}/api/v1/statuses`, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${accessToken}`,
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        status: postComment,
-                        media_ids: [data.id],
-                        visibility: publishingLevel,
-                        sensitive: isSensitive,
-                    }),
-                });
-            })
-            .then(() => {
-                deactivatePostingProgressBar();
-                setTimeout(() => {
-                    showMessage('　投稿しましたわ！')
-                    showElapsedTimeFromLastClearTime();
-                    initializePostDialog();
-                }, 100);
-                
-            })
-            .catch(error => {
-                if (error == "PostError")
-                {
-                    deactivatePostingProgressBar();
-                    alert("ポストエラーですの。トークンが駄目みたいですのでcodeを取り直しますわ。もう一度ポストしてみてくださいね。");
-                    getAuthCodeRedirect();
-                }
-                else
-                {
-                    deactivatePostingProgressBar();
-                    console.error('Error:', error);
-                    alert('投稿中によくわからないエラーが発生しましたの‥‥');
-                }
-            });
-        }
-        function postImageToMisskey(dataURL, accessToken) {
-            setOutputFileName();
-            activatePostingProgressBar();
-            closeDialog();
-            showElapsedTimeFromLastClearTime();
-
-            // 画像アップロード
-            fetch(`${serverUrl}/api/drive/files/create`, {
-                method: 'POST',
-                headers: { 'Authorization': `Bearer ${accessToken}` },
-                body: (() => {
-                    const formData = new FormData();
-                    formData.append('file', dataURLToBlob(dataURL), outputFileName);
-                    formData.append('isSensitive', isSensitive);
-                    return formData;
-                })()
-            })
-            .then(res => {
-                if (!res.ok) {
-                    if (res.status === 401) throw { type: "MisskeyAuthError" };
-                    return res.json().then(err => { throw err; });
-                }
-                return res.json();
-            })
-            .then(file => {
-                // ノート投稿
-                return fetch(`${serverUrl}/api/notes/create`, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${accessToken}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        text: postComment,
-                        fileIds: [file.id],
-                        visibility: convertVisibilityForMisskey(publishingLevel),
-                        //cw: CWFLAG ? "CW message" : undefined
-                    })
-                });
-            })
-            .then(res => {
-                if (!res.ok) {
-                    if (res.status === 401) throw { type: "MisskeyAuthError" };
-                    return res.json().then(err => { throw err; });
-                }
-                return res.json();
-            })
-            .then(() => {
-                deactivatePostingProgressBar();
-                setTimeout(() => {
-                    showMessage('　投稿しましたわ！');
-                    showElapsedTimeFromLastClearTime();
-                    initializePostDialog();
-                }, 100);
-            })
-            .catch(async error => {
-                deactivatePostingProgressBar();
-                if (error.type === "MisskeyAuthError") {
-                    // アクセストークン無効時の処理
-                    accessToken = null;
-                    window.localStorage.removeItem(localstorageKeyMisskeyAccessToken);
-                    authButton.style.display = '';
-                    postButton.style.display = 'none';
-                    showMessage('Misskey認証が無効になっていますの。再認証してもういちど試してくださいませ。');
-                } else if (error instanceof Response) {
-                    const errJson = await error.json();
-                    alert('Misskey投稿中にエラー: ' + JSON.stringify(errJson));
-                    console.error(errJson);
-                } else {
-                    alert('Misskey投稿中にエラーが発生しました');
-                    console.error(error);
-                }
-            });
-        }
-
-        function convertVisibilityForMisskey(mastodonVisibility) {
-            switch (mastodonVisibility) {
-                case "public": return "public";
-                case "unlisted": return "home";
-                case "private": return "followers";
-                case "direct": return "specified";
-                default: return "public";
-            }
-        }
-
-        function getAuthCodeRedirect() {
-            document.location = `${serverUrl}/oauth/authorize?response_type=code&redirect_uri=${redirect_uri}&scope=write&client_id=${app_info.client_id}`;
-        }
-
-        function startMiAuth() {
-            // ランダムなセッションIDを生成
-            const session = Math.random().toString(36).slice(2);
-            window.localStorage.setItem('miauth_session', session);
-
-            // MiAuth URL生成
-            const url = `${serverUrl}/miauth/${session}?name=${encodeURIComponent(miauth_name)}&callback=${encodeURIComponent(redirect_uri)}&permission=${encodeURIComponent(miauth_permission.join(','))}`;
-            window.location.href = url;
-        }
-
-        function enablePostButton() {
-            authButton.style.display = 'none';
-            postButton.style.display = '';
-        }
-
-
-        // 読み込み時の認証処理
-        if (accessToken) { //MastodonもしくはMisskey認証済みの場合
-            enablePostButton();
-        } else if(code) { // Mastodon認証後の処理
-            fetch(`${serverUrl}/oauth/token`, 
-                    {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded'
-                        },
-                        body: `code=${code}&client_id=${app_info.client_id}&client_secret=${app_info.client_secret}&grant_type=authorization_code&redirect_uri=${redirect_uri}&scope=write`
-                    }
-                )
-                .then(response => {
-                    if (!response.ok) {
-                        getAuthCodeRedirect() // トークンエラーのため、再度認証を要求
-                        throw "TokenError";
-                    }
-                    return response.json()
-                })
-                .then(data =>{
-                    accessToken = data.access_token;
-                    window.localStorage.setItem(localstorageKeyAccessToken, accessToken);
-                    cleanUrlAndReload();
-                })
-        } else if (miauthSession && app_info.app_type === "misskey") { // Misskey認証後の処理
-            fetch(`${serverUrl}/api/miauth/${miauthSession}/check`, 
-                    {
-                        method: "POST"
-                    }
-                )
-                .then(res => res.json())
-                .then(data => {
-                    if (data.ok && data.token) {
-                        accessToken = data.token;
-                        window.localStorage.setItem(localstorageKeyMisskeyAccessToken, accessToken);
-                        cleanUrlAndReload();
-                    } else {
-                        //alert("Misskey認証に失敗しました");
-                        cleanUrlAndReload();
-                    }
-                });
-        } else{
-            // 未認証。何もしません。
-        }
+        //ハッシュタグコピーイベントリスナー登録
+        copyHashtagButton.addEventListener('click', copyHastag);    
     </script>
 </body>
 </html>
