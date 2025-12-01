@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=750">
+    <link rel="icon" href="image/favicon.ico">
+    <title>pao_boardについて</title>
+    <link rel="stylesheet" type="text/css" href="style.css?v=1"> <!--v=の値を変えることで、CSSのキャッシュを破棄して再読み込みしてもらいますの-->
+</head>
+<body>
+    <div id="manual-containter">
+        <div id="controls-top">
+            <div class="top-left-buttons">
+                <button id="back" class="controls-top-button" title="戻る">
+                    <img class="svg-button" src="image/undo.svg" style="height: 100%;" alt="Back">
+                </button>
+            </div>
+            <div class="top-right-buttons">
+                <button id="shareUrl" class="controls-top-button" title="URLを共有">
+                    <img class="svg-button" src="image/share.svg" style="height: 100%;" alt="Share">
+                </button>
+            </div>
+        </div>
+        <div id="manual-content">
+
+            <H1>pao_board</H1>
+            電子メモパッド風お絵描きアプリ<br><br>
+            <hr>
+            <h2>使い方</h2>
+            画面上で指やペンタブレットやマウスでお絵描きができますの。<br>    
+            右上のボタンで、描いた絵を保存したり、クリップボードにコピーしたりできましてよ。<br>
+            <br>
+            アンドゥや消しゴム機能はあえて付けておりませんの。<br>
+            一発描きを楽しんでくださいね！<br>
+            
+            <br>
+            <hr>
+            <H2>姉妹版のご紹介</H2>
+            本アプリは、おえかきアプリ <a href="https://kurajo.ivory.ne.jp/rakugaki_pao/">rakugaki_pao</a> の姉妹版です。<br>
+            rakugaki_pao は、線画と色塗りに特化したシンプルなペイントアプリですわ。<br>
+            よろしければこちらもお試しくださいませ。<br><br>
+            <a href="https://kurajo.ivory.ne.jp/rakugaki_pao/">
+                <img src="image/rakugaki_pao_image.png" width="75%" height="75%">
+            </a><br>
+            <br>
+            なお、pao_board の利用規約は rakugaki_pao と同じものを適用いたします。<br>
+            詳しくは <a href="https://kurajo.ivory.ne.jp/rakugaki_pao/manual.html">rakugaki_pao について</a> をご覧くださいまし。<br>
+            <br>
+            <hr>
+            <H2>作者</H2>
+            <div style="float: left; width: 160px;">
+                <img src="image/cosphi_rakugaki.png">
+            </div>
+            <div>
+                <p style="font-size: larger;">
+                    <b>こすふぃー</b> <a href="https://mistodon.cloud/@cosphi">@cosphi@mistodon.cloud</a><br>
+                </p>
+                
+                JCJK@クラウド女学院 / mistodon.cloud 管理人<br>
+                <br>
+                連絡先: 
+                <a href="https://fedibird.com/@cosphi">mastodon(fedibird)</a> /
+                <a href="https://misskey.cloud/@cosphi">Misskey</a> /
+                <a href="https://x.com/cosine_phi">𝕏</a> 
+               
+            </div>
+            <div style="clear:both">
+                <br>
+                <br>
+
+            </div>
+        </div>
+    </div>
+    <div>
+        <div id="hashtag-line">
+            <span id="hashtag-text">#pao_board</span>
+        </div>
+        <br>
+    </div>
+
+    <script>
+        const backButton = document.getElementById('back');
+        const shareUrlButton = document.getElementById('shareUrl');
+        const mainUrl = "https://kurajo.ivory.ne.jp/pao_board/";
+        const shareText = `${mainUrl}\n#pao_board`;
+
+        backButton.addEventListener('click', () => {
+            location.href='./index.html';
+        })
+
+        shareUrlButton.addEventListener('click',() => {
+            navigator.share({
+                url: mainUrl,
+                text: shareText,
+                title: 'pao_board',
+            }).then(() => {
+                console.log("共有しましたの");
+            }).catch((error) => {
+                console.log('共有できませんでしたの‥‥');
+            });
+        });
+    </script>
+</body>
+</html>

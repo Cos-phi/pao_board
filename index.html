@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=750">
-    <!--<link rel="icon" href="image/favicon.ico">
-    <link rel="apple-touch-icon" sizes="180x180" href="image/apple-touch-icon.png">-->
+    <link rel="icon" href="image/favicon.ico">
     <title>pao_board</title>
-    <link rel="stylesheet" type="text/css" href="style.css?v=19"> <!--v=の値を変えることで、CSSのキャッシュを破棄して再読み込みしてもらいますわ-->
+    <link rel="stylesheet" type="text/css" href="style.css?v=1"> <!--v=の値を変えることで、CSSのキャッシュを破棄して再読み込みしてもらいますわ-->
 </head>
 <body>
     <div id="app">
@@ -15,9 +14,9 @@
                 <button id="clear" class="controls-top-button" title="キャンバスのクリア/Clear Canvas">
                     <img class="svg-button" src="image/new.svg" style="height: 100%;" alt="Clear">
                 </button>
-                <!---<button id="manual" class="controls-top-button" title="pao_boardについて/About pao_board">
+                <button id="manual" class="controls-top-button" title="pao_boardについて/About pao_board">
                     <img class="svg-button" src="image/manual.svg" style="height: 100%;" alt="Manual">
-                </button>-->
+                </button>
             </div>
 
             <div class="top-right-buttons">
@@ -72,7 +71,6 @@
 
         const modals = document.getElementsByClassName('modal');
 
-
         //重要な設定
         const fillColor = "#36364A";
         const penColor1 = "#39C2D6";
@@ -111,6 +109,7 @@
 
         //イベントリスナーの登録
         clearButton.addEventListener('click', clearCanvas);
+        manualButton.addEventListener('click', openManual);
         
         copyButton.addEventListener('click', copyImage);
         saveButton.addEventListener('click', saveImage);
