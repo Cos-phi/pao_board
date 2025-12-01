@@ -69,7 +69,7 @@ canvas {
 }
 #hashtag-text {
     font-size: 20px;
-    color: #AAAAAA;
+    color: #c9c9b5;
     letter-spacing: 0.4rem;
     margin-left: 20px;
     text-align: center;
@@ -79,7 +79,7 @@ canvas {
     height: 24px;
     font-size: 20px;
     font-weight: bold;
-    color: #AAAAAA;
+    color: #c9c9b5;
     letter-spacing: 0.1rem;
     justify-content: center;
     text-align: center;
@@ -123,7 +123,8 @@ button {
     height: 100%
 } 
 .copy-hashtag-button:hover .icon{    
-    opacity: 0.3;
+    opacity: 1.0;
+    filter: invert(100%)
 } 
 .active {
     outline: 3px solid #000000;
