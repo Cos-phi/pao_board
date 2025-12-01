@@ -154,10 +154,8 @@
                 ctxBlack.lineTo(xM, yM); //移動量が多いとき、補間点を作って経由します
                 [lastX,lastY] = [xM,yM];
             }else{
-                console.log(`Smoothed  (${x},${y})`);
                 x = x*(1-smoothingFactor) + lastX*smoothingFactor;
                 y = y*(1-smoothingFactor) + lastY*smoothingFactor;
-                console.log(`to (${x},${y})`);
             }
             ctxBlack.lineTo(x, y);
             ctxBlack.globalCompositeOperation = 'destination-out';
@@ -259,23 +257,15 @@
         }
         
         function initializeCanvasLayers(){
-            // ensure we draw normally when initializing (drawing operations
-            // may set globalCompositeOperation to 'destination-out' for erasing)
             ctxBlack.globalCompositeOperation = 'source-over';
             ctxBlack.fillStyle = fillColor;
             ctxBlack.fillRect(0,0, canvasWidth,canvasHeight);
-            // after initializing background, leave composite mode for drawing
-            // draw operations explicitly set destination-out when erasing, so
-            // we don't change it here permanently.
-
-            console.log('Canvas layers initialized.');
         }
 
         function initializeBackgroundLayer(){
             ctxColor.globalCompositeOperation = 'source-over';
             ctxColor.fillStyle = penColor;
             ctxColor.fillRect(0,0, canvasWidth,canvasHeight);
-            console.log('Background layer initialized.');
         }
         
         //リロード・URLクリーンアップに関する関数
