@@ -75,7 +75,8 @@
 
         //重要な設定
         const fillColor = "#36364A";
-        const penColor = "#3BEAC0";
+        const penColor1 = "#39C2D6";
+        const penColor2 = "#3BEAC0";
         const [canvasWidth,canvasHeight] = [720,720];
         const smoothingFactor = 0.375;
         const hashtag = '#pao_board';
@@ -264,8 +265,11 @@
 
         function initializeBackgroundLayer(){
             ctxColor.globalCompositeOperation = 'source-over';
-            ctxColor.fillStyle = penColor;
-            ctxColor.fillRect(0,0, canvasWidth,canvasHeight);
+            const gradient = ctxColor.createLinearGradient(0, 0, canvasWidth/5, canvasHeight);
+            gradient.addColorStop(0, penColor1); 
+            gradient.addColorStop(1, penColor2);
+            ctxColor.fillStyle = gradient;
+            ctxColor.fillRect(0, 0, canvasWidth, canvasHeight);
         }
         
         //リロード・URLクリーンアップに関する関数
