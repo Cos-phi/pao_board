@@ -74,9 +74,8 @@
 
 
         //重要な設定
-        const backgroundColor = "#111117";
         const fillColor = "#36364A";
-        const penColor = "#3FEFFE";
+        const penColor = "#3BEAC0";
         const [canvasWidth,canvasHeight] = [720,720];
         const smoothingFactor = 0.375;
         const hashtag = '#pao_board';
@@ -85,7 +84,6 @@
         //キャンバスの初期化
         canvasContainer.style.width = canvasWidth + 'px';
         canvasContainer.style.height = canvasHeight + 'px';
-        canvasContainer.style.backgroundColor = backgroundColor;
         [combinedCanvas.width, combinedCanvas.height] = [canvasWidth, canvasHeight];
         [blackLayer.width, blackLayer.height] = [canvasWidth, canvasHeight];
         [colorLayer.width, colorLayer.height] = [canvasWidth, canvasHeight];
@@ -318,8 +316,6 @@
             location.href = manualUrl;
         }
 
-
-        
         function setCursorVisible(){
             cursor.style.borderWidth = '2px';
         }
@@ -332,8 +328,6 @@
 
         //絵の保存に関する関数
         function combineCanvas() {
-            ctxCombined.fillStyle = backgroundColor;
-            ctxCombined.fillRect(0,0,canvasWidth,canvasHeight);
             ctxCombined.drawImage(colorLayer, 0, 0);
             ctxCombined.drawImage(blackLayer, 0, 0);
         }
