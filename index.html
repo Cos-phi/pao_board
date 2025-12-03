@@ -38,6 +38,12 @@
             <div id="cursor"></div>
         </div>
 
+        <div id="logo-button-container">
+            <button id="open-launch-rakugaki_pao-dialog-button" class="logo-button" title="rakugaki_pao">
+                <img id="rakugaki_pao-button-img" style="height: 100%;" alt="Authentication" src="image/pen.svg">
+            </button>
+        </div>
+
         <div id="hashtag-line">
             <button id="copy-hashtag" class="copy-hashtag-button" title="ハッシュタグをコピー/Copy Hashtag">
                 <span id="hashtag-text">#pao_board</span>
@@ -47,6 +53,25 @@
         
         <div id="message-line"></div>
         
+    <div id="launch-rakugaki_pao-modal" class="modal"  style="display: none;"> <!-- none -->
+        <div class="modal-content">
+            <div class="dialog-title-container">
+                <button id="close-post-dialog-button" class="close-dialog-button">×</button>
+            </div>
+            <div id="preview-img-container">
+                <img id="preview-img" width="360" height="360" alt="Preview Image" src="image/dummy_preview.png">
+            </div>
+            <div>
+                <select id="mode-select">
+                    <option value="lines">🖊️ 線画として転送 / Send as Line Art</option>
+                    <option value="rough">🖌️ ラフとして転送 / Send as Rough Sketch</option>
+                </select>
+                <br>
+            <button id="launch-rakugaki_pao-button">▶ rakugaki_pao </button>
+            
+            </div>
+        </div>
+    </div>
 
     </div>
 
@@ -65,11 +90,18 @@
         const cursor = document.getElementById('cursor');
         const combinedCanvas = document.createElement('canvas');
 
+        const openLaunchRakugaki_paoDialogButton = document.getElementById('open-launch-rakugaki_pao-dialog-button');
+
         const hashtagLine = document.getElementById('hashtag-line');
         const messageLine = document.getElementById('message-line');
         const copyHashtagButton = document.getElementById('copy-hashtag');
 
         const modals = document.getElementsByClassName('modal');
+        const launchRakugaki_paoModal = document.getElementById('launch-rakugaki_pao-modal');
+        const closePostDialogButton = document.getElementById('close-post-dialog-button');
+        const previewImg = document.getElementById("preview-img");
+        const modeSelect = document.getElementById('mode-select');
+        const launchRakugaki_paoButton = document.getElementById('launch-rakugaki_pao-button');
 
         //重要な設定
         const fillColor = "#36364A";
@@ -126,6 +158,10 @@
         blackLayer.addEventListener('touchcancel', stopDrawingTouch);
         blackLayer.addEventListener('touchmove', updateCursorTouch);
 
+        openLaunchRakugaki_paoDialogButton.addEventListener('click', openLaunchRakugaki_paoDialog);
+        closePostDialogButton.addEventListener('click',closeDialog);
+
+
         //初期化
         restoreLocalstorage();
         if(null === window.sessionStorage.getItem(sessionstorageKeyLastClearTime)){
@@ -133,6 +169,7 @@
             initializeCanvasLayers();
         }
         initializeBackgroundLayer();
+        initializeModal();
 
         //関数
 
@@ -429,6 +466,34 @@
 
         //ハッシュタグコピーイベントリスナー登録
         copyHashtagButton.addEventListener('click', copyHastag);    
+
+        
+        //ダイアログ共通
+        function closeDialog() {
+            for (let i = 0; i < modals.length; i++) {
+                modals[i].style.display = 'none'; 
+            }
+        }
+
+        function initializeModal(){
+            for (let i = 0; i < modals.length; i++) {
+                //modals[i].style.display = 'none'; // 各要素を非表示にする
+                modals[i].addEventListener('click', (event) => {
+                    if (event.target === modals[i]) {
+                        closeDialog();
+                    }
+                });
+            }
+        }
+
+        //投稿ダイアログ
+        function openLaunchRakugaki_paoDialog() {
+            showElapsedTimeFromLastClearTime();
+            //combineCanvas();    
+            const dataURL = combinedCanvas.toDataURL('image/png');
+            previewImg.src = dataURL;
+            launchRakugaki_paoModal.style.display = 'block';
+        }
     </script>
 </body>
 </html>
