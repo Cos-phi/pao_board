@@ -62,7 +62,7 @@
                 <img id="preview-img" width="360" height="360" alt="Preview Image" src="image/dummy_preview.png">
             </div>
             <div>
-                <select id="mode-select">
+                <select id="sending-mode-select">
                     <option value="lines">🖊️ 線画として転送 / Send as Line Art</option>
                     <option value="rough">🖌️ ラフとして転送 / Send as Rough Sketch</option>
                 </select>
@@ -89,6 +89,7 @@
         const colorLayer = document.getElementById('color-layer');
         const cursor = document.getElementById('cursor');
         const combinedCanvas = document.createElement('canvas');
+        const invertCanvas = document.createElement('canvas');
 
         const openLaunchRakugaki_paoDialogButton = document.getElementById('open-launch-rakugaki_pao-dialog-button');
 
@@ -100,11 +101,14 @@
         const launchRakugaki_paoModal = document.getElementById('launch-rakugaki_pao-modal');
         const closePostDialogButton = document.getElementById('close-post-dialog-button');
         const previewImg = document.getElementById("preview-img");
-        const modeSelect = document.getElementById('mode-select');
+        const sendingModeSelect = document.getElementById('sending-mode-select');
         const launchRakugaki_paoButton = document.getElementById('launch-rakugaki_pao-button');
 
         //重要な設定
-        const boardColor = "#36364A";
+        const rakugaki_paoBlackPenColor = "#36364A";
+        const rakugaki_paoRoughColor = "#B1E6DB";
+
+        const boardColor = rakugaki_paoBlackPenColor
         const penColor1 = "#39C2D6";
         const penColor2 = "#3BEAC0";
         const [canvasWidth,canvasHeight] = [720,720];
@@ -112,24 +116,30 @@
         const hashtag = '#pao_board';
         const toolDiameter = 2; //描画ツールの直径(px)
 
+
         //キャンバスの初期化
         canvasContainer.style.width = canvasWidth + 'px';
         canvasContainer.style.height = canvasHeight + 'px';
         [combinedCanvas.width, combinedCanvas.height] = [canvasWidth, canvasHeight];
         [lineLayer.width, lineLayer.height] = [canvasWidth, canvasHeight];
         [colorLayer.width, colorLayer.height] = [canvasWidth, canvasHeight];
+        [invertCanvas.width, invertCanvas.height] = [canvasWidth, canvasHeight];
+
         const ctxLine = lineLayer.getContext('2d',{ willReadFrequently: true });
         const ctxColor = colorLayer.getContext('2d',{ willReadFrequently: true });
         const ctxCombined = combinedCanvas.getContext('2d');
+        const ctxInvert = invertCanvas.getContext('2d');
 
 
-
-
-                
         //ストレージキー
         const localstorageKeyPBLine = 'pblineLayerlskey';
         const sessionstorageKeyLastClearTime = 'pblastcleartimekey';
-        
+        const localstoragekeyRakugaki_paoLine = 'pao_board2rakugaki_paoKey';
+
+        const rakugaki_paoImportKeyBlack = 'importblacklayer';
+        const rakugaki_paoImportKeyColor = 'importcolorlayer';
+        let rakugaki_paoImportParamKey = rakugaki_paoImportKeyBlack;
+         
         const manualUrl = "manual.html"
         const shareUrl = "https://kurajo.ivory.ne.jp/pao_board/"
         
@@ -159,6 +169,8 @@
         lineLayer.addEventListener('touchmove', updateCursorTouch);
 
         openLaunchRakugaki_paoDialogButton.addEventListener('click', openLaunchRakugaki_paoDialog);
+        sendingModeSelect.addEventListener('change', sendingModeSelectApplyAndGenInvertCanvas);
+        launchRakugaki_paoButton.addEventListener('click', sendAndLaunchRakugaki_pao);
         closePostDialogButton.addEventListener('click',closeDialog);
 
 
@@ -486,13 +498,54 @@
             }
         }
 
+        //rakugaki_pao転送に関連する関数
         //投稿ダイアログ
         function openLaunchRakugaki_paoDialog() {
             showElapsedTimeFromLastClearTime();
-            //combineCanvas();    
-            const dataURL = combinedCanvas.toDataURL('image/png');
-            previewImg.src = dataURL;
+            sendingModeSelectApplyAndGenInvertCanvas();
             launchRakugaki_paoModal.style.display = 'block';
+        }
+
+        function sendingModeSelectApplyAndGenInvertCanvas(){
+            const selectedMode = sendingModeSelect.value;
+            if(selectedMode === 'lines'){
+                invertCtxLineAlphaAndChangeColor(rakugaki_paoBlackPenColor); 
+                rakugaki_paoImportParamKey = rakugaki_paoImportKeyBlack;
+            }else if(selectedMode === 'rough'){
+                invertCtxLineAlphaAndChangeColor(rakugaki_paoRoughColor);  
+                rakugaki_paoImportParamKey = rakugaki_paoImportKeyColor;
+            }
+            const dataURL = invertCanvas.toDataURL('image/png');
+            previewImg.src = dataURL;
+        }
+
+        function invertCtxLineAlphaAndChangeColor(targetColorCode = "#FF0000"){ 
+            const hex = targetColorCode.replace('#', '');
+            const targetR = parseInt(hex.substring(0, 2), 16);
+            const targetG = parseInt(hex.substring(2, 4), 16);
+            const targetB = parseInt(hex.substring(4, 6), 16);
+            // lineLayerのピクセルデータを取得
+            const imageData = ctxLine.getImageData(0, 0, canvasWidth, canvasHeight);
+            const data = imageData.data;
+
+            for (let i = 0; i < data.length; i += 4) {
+                data[i + 0] = targetR;
+                data[i + 1] = targetG;
+                data[i + 2] = targetB;      
+                const currentAlpha = data[i + 3];
+                data[i + 3] = 255 - currentAlpha;
+            }
+            ctxInvert.putImageData(imageData, 0, 0);
+        }
+
+        function saveInvertCanvasLocalstorage(){
+            saveLayeronlocalstorage(localstoragekeyRakugaki_paoLine,invertCanvas);    
+        }
+
+        function sendAndLaunchRakugaki_pao(){
+            saveInvertCanvasLocalstorage();
+            window.open('../rakugaki_pao/index.html?' + rakugaki_paoImportParamKey + '=' + localstoragekeyRakugaki_paoLine);
+            closeDialog();
         }
     </script>
 </body>
