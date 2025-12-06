@@ -128,6 +128,11 @@ button {
     margin-left: 4px;
     margin-right: 4px;
     padding: 0px 0px 1px 0px;
+    opacity: 1.0;
+}
+.logo-button:hover{
+    opacity: 1.0;
+    background-color: #3F3F3F;
 }
 .copy-hashtag-button {
     display: flex;

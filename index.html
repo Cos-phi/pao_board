@@ -34,13 +34,13 @@
 
         <div id="canvas-container">
             <canvas id="color-layer"></canvas>
-            <canvas id="black-layer"></canvas>
+            <canvas id="line-layer"></canvas>
             <div id="cursor"></div>
         </div>
 
         <div id="logo-button-container">
             <button id="open-launch-rakugaki_pao-dialog-button" class="logo-button" title="rakugaki_pao">
-                <img id="rakugaki_pao-button-img" style="height: 100%;" alt="Authentication" src="image/pen.svg">
+                <img id="rakugaki_pao-button-img" style="height: 100%;" alt="Authentication" src="image/rakugaki_pao_logo.svg">
             </button>
         </div>
 
@@ -85,7 +85,7 @@
         const shareButton = document.getElementById('share-button');
 
         const canvasContainer = document.getElementById('canvas-container');
-        const blackLayer = document.getElementById('black-layer');
+        const lineLayer = document.getElementById('line-layer');
         const colorLayer = document.getElementById('color-layer');
         const cursor = document.getElementById('cursor');
         const combinedCanvas = document.createElement('canvas');
@@ -104,7 +104,7 @@
         const launchRakugaki_paoButton = document.getElementById('launch-rakugaki_pao-button');
 
         //重要な設定
-        const fillColor = "#36364A";
+        const boardColor = "#36364A";
         const penColor1 = "#39C2D6";
         const penColor2 = "#3BEAC0";
         const [canvasWidth,canvasHeight] = [720,720];
@@ -116,9 +116,9 @@
         canvasContainer.style.width = canvasWidth + 'px';
         canvasContainer.style.height = canvasHeight + 'px';
         [combinedCanvas.width, combinedCanvas.height] = [canvasWidth, canvasHeight];
-        [blackLayer.width, blackLayer.height] = [canvasWidth, canvasHeight];
+        [lineLayer.width, lineLayer.height] = [canvasWidth, canvasHeight];
         [colorLayer.width, colorLayer.height] = [canvasWidth, canvasHeight];
-        const ctxBlack = blackLayer.getContext('2d',{ willReadFrequently: true });
+        const ctxLine = lineLayer.getContext('2d',{ willReadFrequently: true });
         const ctxColor = colorLayer.getContext('2d',{ willReadFrequently: true });
         const ctxCombined = combinedCanvas.getContext('2d');
 
@@ -127,7 +127,7 @@
 
                 
         //ストレージキー
-        const localstorageKeyBlack = 'pbblacklayerlskey';
+        const localstorageKeyPBLine = 'pblineLayerlskey';
         const sessionstorageKeyLastClearTime = 'pblastcleartimekey';
         
         const manualUrl = "manual.html"
@@ -147,16 +147,16 @@
         saveButton.addEventListener('click', saveImage);
         shareButton.addEventListener('click', shareImage);
 
-        blackLayer.addEventListener('mousedown', startDrawingMouse);
-        blackLayer.addEventListener('mousemove', drawMouse);
-        blackLayer.addEventListener('mouseup', stopDrawing);
-        blackLayer.addEventListener('mouseout', stopDrawingMouseOut);
-        blackLayer.addEventListener('mousemove', updateCursorMouse);
-        blackLayer.addEventListener('touchstart', startDrawingTouch);
-        blackLayer.addEventListener('touchmove', drawTouch);
-        blackLayer.addEventListener('touchend', stopDrawingTouch);
-        blackLayer.addEventListener('touchcancel', stopDrawingTouch);
-        blackLayer.addEventListener('touchmove', updateCursorTouch);
+        lineLayer.addEventListener('mousedown', startDrawingMouse);
+        lineLayer.addEventListener('mousemove', drawMouse);
+        lineLayer.addEventListener('mouseup', stopDrawing);
+        lineLayer.addEventListener('mouseout', stopDrawingMouseOut);
+        lineLayer.addEventListener('mousemove', updateCursorMouse);
+        lineLayer.addEventListener('touchstart', startDrawingTouch);
+        lineLayer.addEventListener('touchmove', drawTouch);
+        lineLayer.addEventListener('touchend', stopDrawingTouch);
+        lineLayer.addEventListener('touchcancel', stopDrawingTouch);
+        lineLayer.addEventListener('touchmove', updateCursorTouch);
 
         openLaunchRakugaki_paoDialogButton.addEventListener('click', openLaunchRakugaki_paoDialog);
         closePostDialogButton.addEventListener('click',closeDialog);
@@ -183,34 +183,34 @@
 
         function draw(x, y) {
             if (!isDrawing) return;
-            ctxBlack.beginPath();
-            ctxBlack.moveTo(lastX, lastY);
+            ctxLine.beginPath();
+            ctxLine.moveTo(lastX, lastY);
             const travelSquared = (x-lastX)**2 + (y-lastY)**2;
             if(64 < travelSquared){
                 const [xM,yM] = [lastX + (x - beforeLastX)/4, lastY + (y - beforeLastY)/4]; 
-                ctxBlack.lineTo(xM, yM); //移動量が多いとき、補間点を作って経由します
+                ctxLine.lineTo(xM, yM); //移動量が多いとき、補間点を作って経由します
                 [lastX,lastY] = [xM,yM];
             }else{
                 x = x*(1-smoothingFactor) + lastX*smoothingFactor;
                 y = y*(1-smoothingFactor) + lastY*smoothingFactor;
             }
-            ctxBlack.lineTo(x, y);
-            ctxBlack.globalCompositeOperation = 'destination-out';
-            ctxBlack.lineWidth = toolDiameter;
-            ctxBlack.lineCap = 'round';
-            ctxBlack.stroke();
+            ctxLine.lineTo(x, y);
+            ctxLine.globalCompositeOperation = 'destination-out';
+            ctxLine.lineWidth = toolDiameter;
+            ctxLine.lineCap = 'round';
+            ctxLine.stroke();
             
             [beforeLastX,beforeLastY] = [lastX,lastY];
             [lastX, lastY] = [x, y];
         }
 
         function stipple(x,y){
-            ctxBlack.beginPath();
-            ctxBlack.moveTo(x, y);
-            ctxBlack.globalCompositeOperation = 'destination-out';
-            ctxBlack.arc(x,y, toolDiameter*0.5, 0, 2*Math.PI, true);
-            ctxBlack.closePath();
-            ctxBlack.fill();
+            ctxLine.beginPath();
+            ctxLine.moveTo(x, y);
+            ctxLine.globalCompositeOperation = 'destination-out';
+            ctxLine.arc(x,y, toolDiameter*0.5, 0, 2*Math.PI, true);
+            ctxLine.closePath();
+            ctxLine.fill();
         }
 
         function stopDrawing() {
@@ -271,7 +271,7 @@
         
         //製作中の絵の保存・読込に関する関数
         function saveLocalstorage() {
-            saveLayeronlocalstorage(localstorageKeyBlack,blackLayer);    
+            saveLayeronlocalstorage(localstorageKeyPBLine,lineLayer);    
         }
         
         function saveLayeronlocalstorage(localstoragekey,layer){
@@ -279,14 +279,14 @@
         }
 
         function restoreLocalstorage() {
-            restoreLayeronlocalstorage(localstorageKeyBlack,blackLayer);
+            restoreLayeronlocalstorage(localstorageKeyPBLine,lineLayer);
         }
 
         function restoreLayeronlocalstorage(localstoragekey,layer) {
-            let base64blacklayer = window.localStorage.getItem(localstoragekey);
-            if ( base64blacklayer != null) {
+            let base64lineLayer = window.localStorage.getItem(localstoragekey);
+            if ( base64lineLayer != null) {
                 let image = new Image();
-                image.src = base64blacklayer;
+                image.src = base64lineLayer;
                 image.onload = function(){
                     layer.getContext('2d').drawImage(image,0,0);
                 }
@@ -294,9 +294,9 @@
         }
         
         function initializeCanvasLayers(){
-            ctxBlack.globalCompositeOperation = 'source-over';
-            ctxBlack.fillStyle = fillColor;
-            ctxBlack.fillRect(0,0, canvasWidth,canvasHeight);
+            ctxLine.globalCompositeOperation = 'source-over';
+            ctxLine.fillStyle = boardColor;
+            ctxLine.fillRect(0,0, canvasWidth,canvasHeight);
         }
 
         function initializeBackgroundLayer(){
@@ -359,7 +359,7 @@
         //絵の保存に関する関数
         function combineCanvas() {
             ctxCombined.drawImage(colorLayer, 0, 0);
-            ctxCombined.drawImage(blackLayer, 0, 0);
+            ctxCombined.drawImage(lineLayer, 0, 0);
         }
 
         function dataURLToBlob(dataURL) {
