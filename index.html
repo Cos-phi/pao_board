@@ -173,6 +173,26 @@
         launchRakugaki_paoButton.addEventListener('click', sendAndLaunchRakugaki_pao);
         closePostDialogButton.addEventListener('click',closeDialog);
 
+        //ショートカットキーの登録
+        document.addEventListener('keydown', event => {
+            const target = event.target;
+            switch (event.code) {
+                case 'KeyR':
+                    reloadPage();
+                    break;
+                case 'KeyN':
+                    clearCanvas();
+                    break;
+                case 'KeyT':
+                    showElapsedTimeFromLastClearTime();
+                    break;
+                case 'Escape':
+                    closeDialog();
+                    break;
+                default:
+                    return;
+            }
+        });
 
         //初期化
         restoreLocalstorage();
