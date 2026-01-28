@@ -11,22 +11,22 @@
     <div id="app">
         <div id="controls-top">
             <div class="top-left-buttons">
-                <button id="clear" class="controls-top-button" title="キャンバスのクリア/Clear Canvas">
+                <button id="clear" class="controls-top-button">
                     <img class="svg-button" src="image/new.svg" style="height: 100%;" alt="Clear">
                 </button>
             </div>
 
             <div class="top-right-buttons">
-                <button id="copy-button" class="controls-top-button" title="クリップボードにコピー/Copy to Clipboard">
+                <button id="copy-button" class="controls-top-button">
                     <img class="svg-button" src="image/copytoclipboard.svg" style="height: 100%;" alt="Copy">
                 </button>
-                <button id="save-button" class="controls-top-button" title="ダウンロードして保存/Save to Download">
+                <button id="save-button" class="controls-top-button">
                     <img class="svg-button" src="image/download.svg" style="height: 100%;" alt="Download">
                 </button>
-                <button id="share-button" class="controls-top-button" title="共有/Share">
+                <button id="share-button" class="controls-top-button">
                     <img class="svg-button" src="image/share.svg" style="height: 100%;" alt="Share">
                 </button>
-                <button id="manual" class="controls-top-button" title="pao_boardについて/About pao_board">
+                <button id="manual" class="controls-top-button">
                     <img class="svg-button" src="image/manual.svg" style="height: 100%;" alt="Manual">
                 </button>
             </div>
@@ -45,7 +45,7 @@
         </div>
 
         <div id="hashtag-line">
-            <button id="copy-hashtag" class="copy-hashtag-button" title="ハッシュタグをコピー/Copy Hashtag">
+            <button id="copy-hashtag" class="copy-hashtag-button">
                 <span id="hashtag-text">#pao_board</span>
                 <img class="icon" src="image/copytoclipboard.svg" alt="Copy hashtag">
             </button>
@@ -104,6 +104,9 @@
         const sendingModeSelect = document.getElementById('sending-mode-select');
         const launchRakugaki_paoButton = document.getElementById('launch-rakugaki_pao-button');
 
+        // ブラウザの言語設定検出
+        const browserLanguage = navigator.language.startsWith('ja') ? 'ja' : 'en';
+
         //重要な設定
         const rakugaki_paoBlackPenColor = "#36364A";
         const rakugaki_paoRoughColor = "#B1E6DB";
@@ -133,8 +136,8 @@
 
         //ストレージキー
         const localstorageKeyPBLine = 'pblineLayerlskey';
-        const sessionstorageKeyLastClearTime = 'pblastcleartimekey';
         const localstoragekeyRakugaki_paoLine = 'pao_board2rakugaki_paoKey';
+        const localstorageKeyFirstStrokeTime = 'FirstStrokeTimekey';
 
         const rakugaki_paoImportKeyBlack = 'importblacklayer';
         const rakugaki_paoImportKeyColor = 'importcolorlayer';
@@ -148,6 +151,57 @@
         let isDrawing = false;
         let [lastX,lastY] =[0,0];
         let [beforeLastX,beforeLastY] = [0,0];
+        let isWaitingFirstStroke = window.localStorage.getItem(localstorageKeyFirstStrokeTime) == null;
+        
+
+        // ボタン類のツールチップ設定
+        const translations = {
+            ja: {
+                clear: "キャンバスのクリア",
+                copyButton: "クリップボードにコピー",
+                saveButton: "ダウンロードして保存",
+                shareButton: "共有",
+                manual: "pao_boardについて",
+                copyHashtagButton: "ハッシュタグをコピー",
+                sendingModeSelect: "rakugaki_paoへの送信モード選択",
+                submitButton: "▶ rakugaki_pao ",
+                sendModeOptions: {
+                    lines: "🖊️ 線画として転送　",
+                    rough: "🖌️ ラフとして転送　",
+                },
+                messages: {
+                    canvasCleared: "キャンバスをクリアしました",
+                    noDrawing: "まだお絵かきしていません。",
+                    drawingSeconds: "{sec}秒 お絵かきしました。",
+                    drawingMinutes: "{min}分 お絵かきしました。",
+                    imageCopied: "画像をクリップボードにコピーしました",
+                    hashtagCopied: "ハッシュタグをコピーしました",
+                }
+            },
+            en: {
+                clear: "Clear Canvas",
+                copyButton: "Copy to Clipboard",
+                saveButton: "Save to Download",
+                shareButton: "Share",
+                manual: "About pao_board",
+                copyHashtagButton: "Copy Hashtag",
+                sendingModeSelect: "Select Sending Mode to rakugaki_pao",
+                submitButton: "▶ rakugaki_pao ",
+                sendModeOptions: {
+                    lines: "🖊️ Send as line drawing",
+                    rough: "🖌️ Send as rough sketch"
+                },
+                messages: {
+                    canvasCleared: "Canvas cleared",
+                    noDrawing: "No drawing has been made yet.",
+                    drawingSeconds: "Drew for {sec} seconds.",
+                    drawingMinutes: "Drew for {min} minutes.",
+                    imageCopied: "Image copied to clipboard",
+                    hashtagCopied: "Hashtag copied to clipboard",
+                }
+            }
+        };
+        const currentTranslations = translations[browserLanguage];
 
         //イベントリスナーの登録
         clearButton.addEventListener('click', clearCanvas);
@@ -184,7 +238,7 @@
                     clearCanvas();
                     break;
                 case 'KeyT':
-                    showElapsedTimeFromLastClearTime();
+                    showElapsedTimeFromFirstStrokeTime();
                     break;
                 case 'Escape':
                     closeDialog();
@@ -195,13 +249,15 @@
         });
 
         //初期化
-        restoreLocalstorage();
-        if(null === window.sessionStorage.getItem(sessionstorageKeyLastClearTime)){
-            setLastClearTime();
+        restoreLayerOnLocalstorage();
+        if(null === window.localStorage.getItem(localstorageKeyFirstStrokeTime)){
+            setFirstStrokeTime();
             initializeCanvasLayers();
         }
         initializeBackgroundLayer();
         initializeModal();
+        setTooltips();
+        setSendModeOptions();
 
         //関数
 
@@ -210,6 +266,9 @@
             isDrawing = true;
             [lastX, lastY] = [x, y];
             [beforeLastX,beforeLastY] = [x,y]
+            if (isWaitingFirstStroke){
+                onFirstStrokeDetected();
+            }
             stipple(x,y);
         }
 
@@ -310,20 +369,43 @@
             window.localStorage.setItem(localstoragekey,layer.toDataURL());
         }
 
-        function restoreLocalstorage() {
-            restoreLayeronlocalstorage(localstorageKeyPBLine,lineLayer);
-        }
+        function loadImageFromDataURL(dataURL) {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.onload = () => resolve(img);
+                img.onerror = (e) => reject(e);
+                img.src = dataURL;
+            });
+        }     
 
-        function restoreLayeronlocalstorage(localstoragekey,layer) {
-            let base64lineLayer = window.localStorage.getItem(localstoragekey);
-            if ( base64lineLayer != null) {
-                let image = new Image();
-                image.src = base64lineLayer;
-                image.onload = function(){
-                    layer.getContext('2d').drawImage(image,0,0);
+        async function restoreLayerOnLocalstorage() {
+            // レイヤー画像の復元
+            const restoreLayerAsync = async (localstorageKey, layer) => {
+                const dataURL = window.localStorage.getItem(localstorageKey);
+                if (dataURL == null) return;
+
+                try {
+                    const img = await loadImageFromDataURL(dataURL);
+                    const ctx = layer.getContext('2d');
+                    ctx.drawImage(img, 0, 0);
+                } catch (e) {
+                    console.error(`Failed to restore layer for ${localstorageKey}`, e);
                 }
+            };
+
+            try {
+                await Promise.all([
+                    restoreLayerAsync(localstorageKeyPBLine, lineLayer),
+                ]);
+                if (isCanvasEmpty()) {  // レイヤー復元後にキャンバスが空かどうか判定
+                    resetFirstStrokeState();
+                }
+            } catch (e) {
+                console.error('Layer restoration failed', e);
             }
         }
+
+
         
         function initializeCanvasLayers(){
             ctxLine.globalCompositeOperation = 'source-over';
@@ -350,27 +432,41 @@
         //キャンバスクリア・経過時間表示に関する関数
         function clearCanvas() {
             initializeCanvasLayers();
-            // update last clear time and persist cleared canvas in localStorage
-            setLastClearTime();
             saveLocalstorage();
-            showMessage('キャンバスをクリアしました');
+            resetFirstStrokeState()
+            showMessage(currentTranslations.messages.canvasCleared);
         }
 
-        function setLastClearTime(){
+        function setFirstStrokeTime(){
             const nowTime = new Date();
-            window.sessionStorage.setItem(sessionstorageKeyLastClearTime,nowTime.getTime());
+            const firstStrokeTime = nowTime.getTime();
+            window.localStorage.setItem(localstorageKeyFirstStrokeTime, firstStrokeTime);
         }
 
-        function getElapsedTimeMinFromLastClearTime(){
-            const lastClearTime = window.sessionStorage.getItem(sessionstorageKeyLastClearTime);
+        function getElapsedTimeMinFromFirstStrokeTime(){
+            const firstStrokeTime = window.localStorage.getItem(localstorageKeyFirstStrokeTime) || null
             const nowTime = new Date();
-            const elapsedTimeMin = Math.trunc((nowTime.getTime() - lastClearTime)/1000/60);
+            const elapsedTimeMin = Math.trunc((nowTime.getTime() - firstStrokeTime)/1000/60);
             return elapsedTimeMin;
         }
+
+        function getElapsedTimeSecFromFirstStrokeTime(){
+            const firstStrokeTime = window.localStorage.getItem(localstorageKeyFirstStrokeTime) || null
+            const nowTime = new Date();
+            const elapsedTimeSec = Math.trunc((nowTime.getTime() - firstStrokeTime)/1000);
+            return elapsedTimeSec;
+        }
         
-        function showElapsedTimeFromLastClearTime(){
-            const elapsedTimeMin = getElapsedTimeMinFromLastClearTime();
-            showMessage(`${elapsedTimeMin} 分 お絵かきしました。` );
+        function showElapsedTimeFromFirstStrokeTime(){
+            const elapsedTimeMin = getElapsedTimeMinFromFirstStrokeTime();
+            const sec = getElapsedTimeSecFromFirstStrokeTime() - elapsedTimeMin * 60;
+            if( isWaitingFirstStroke ){
+                showMessage(currentTranslations.messages.noDrawing);
+            }else if( elapsedTimeMin < 1) {
+                showMessage(currentTranslations.messages.drawingSeconds.replace('{sec}', sec));
+            }else{
+                showMessage(currentTranslations.messages.drawingMinutes.replace('{min}', elapsedTimeMin));
+            }
         }
 
         //マニュアル表示
@@ -378,6 +474,46 @@
             location.href = manualUrl;
         }
 
+        function isCanvasEmpty(){
+            const lineData = ctxLine.getImageData(0,0,canvasWidth, canvasHeight).data;
+            for(let i=0; i<lineData.length; i++){
+                if( lineData[i] !== 0 ){
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        function onFirstStrokeDetected(){
+            setFirstStrokeTime();
+            isWaitingFirstStroke = false;
+        }
+
+        function resetFirstStrokeState(){
+            window.localStorage.removeItem(localstorageKeyFirstStrokeTime);
+            isWaitingFirstStroke = true;
+        }
+
+        // ボタンのツールチップ・ラベルを設定
+        function setTooltips() {
+            clearButton.title = currentTranslations.clear;
+            copyButton.title = currentTranslations.copyButton;
+            saveButton.title = currentTranslations.saveButton;
+            shareButton.title = currentTranslations.shareButton;
+            manualButton.title = currentTranslations.manual;
+            copyHashtagButton.title = currentTranslations.copyHashtagButton;
+            sendingModeSelect.title = currentTranslations.sendingModeSelect;
+            launchRakugaki_paoButton.textContent = currentTranslations.submitButton;
+        }
+
+        // sending-mode-selectのオプションを更新する関数
+        function setSendModeOptions() {
+            const options = sendingModeSelect.querySelectorAll('option');
+            options[0].textContent = currentTranslations.sendModeOptions.lines;
+            options[1].textContent = currentTranslations.sendModeOptions.rough;
+        }
+
+        //カーソル表示に関する関数
         function setCursorVisible(){
             cursor.style.borderWidth = '2px';
         }
@@ -385,8 +521,6 @@
         function setCursorInvisible(){
             cursor.style.borderWidth = '0px';
         }
-
-
 
         //絵の保存に関する関数
         function combineCanvas() {
@@ -409,9 +543,8 @@
         function setOutputFileName(){
             const nowTime = new Date();
             const timeString = nowTime.toLocaleString("ja-JP", {year: "numeric",month: "2-digit", day: "2-digit", hour:"2-digit", minute:"2-digit"}).replaceAll('/', '').replaceAll(':','').replaceAll(' ','-');
-            outputFileName = timeString + '_pao_board(' + getElapsedTimeMinFromLastClearTime() +'min).png';
+            outputFileName = timeString + '_pao_board(' + getElapsedTimeMinFromFirstStrokeTime() +'min).png';
         }
-
 
         function copyImage() {
             combineCanvas();
@@ -419,8 +552,8 @@
                 const item = new ClipboardItem({'image/png': blob});
                 await navigator.clipboard.write([item]);
             })
-            showMessage('画像をクリップボードにコピーしました');
-            showElapsedTimeFromLastClearTime();
+            showMessage(currentTranslations.messages.imageCopied);
+            showElapsedTimeFromFirstStrokeTime();
         }
 
         function saveImage() {
@@ -431,7 +564,7 @@
             link.download = outputFileName;
             link.href = dataURL;
             link.click();
-            showElapsedTimeFromLastClearTime();
+            showElapsedTimeFromFirstStrokeTime();
         }
 
         function shareImage() {
@@ -446,24 +579,23 @@
                 title: 'pao_board',
                 files: [imageFile],
             }).then(() => {
-                console.log("共有しましたの");
+                console.log("共有しましたの / Shared successfully");
             }).catch((error) => {
-                console.log('共有できませんでしたの‥‥');
+                console.log('共有できませんでしたの‥‥ / Failed to share');
             });
-            showElapsedTimeFromLastClearTime();
+            showElapsedTimeFromFirstStrokeTime();
         }
                
         //ハッシュタグのコピーに関する関数
         function copyHastag() {
             if (navigator.clipboard) {
                 navigator.clipboard.writeText(hashtag).then(function () {
-                    showMessage(`ハッシュタグをコピーしました`);
+                    showMessage(currentTranslations.messages.hashtagCopied);
                 }).catch(function (error) {
-                    console.error('ハッシュタグのコピーに失敗しました:', error);
-                    alert('ハッシュタグのコピーに失敗しましたの');
+                    alert('ハッシュタグのコピーに失敗しましたの / Failed to copy hashtag');
                 });
             } else {
-                alert('テキストをコピーできませんの');
+                alert('テキストをコピーできませんの / Cannot copy text');
             }
         }
         
@@ -521,7 +653,7 @@
         //rakugaki_pao転送に関連する関数
         //投稿ダイアログ
         function openLaunchRakugaki_paoDialog() {
-            showElapsedTimeFromLastClearTime();
+            showElapsedTimeFromFirstStrokeTime();
             sendingModeSelectApplyAndGenInvertCanvas();
             launchRakugaki_paoModal.style.display = 'block';
         }
